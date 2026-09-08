@@ -126,21 +126,26 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 components={{
-                  // Custom Code Block component with Copy button
-                  code({ node, inline, className, children, ...props }: any) {
-                    const match = /language-(\w+)/.exec(className || '');
-                    const codeString = String(children).replace(/\n$/, '');
-
-                    if (!inline && match) {
+                  // Custom Code Block component with Copy button handled at the pre level
+                  pre({ children }: any) {
+                    if (React.isValidElement(children)) {
+                      const codeProps = (children.props as any) || {};
+                      const className = codeProps.className || '';
+                      const match = /language-(\w+)/.exec(className);
+                      const language = match ? match[1] : 'text';
+                      const rawCode = String(codeProps.children || '').replace(/\n$/, '');
                       return (
-                        <CodeBlock language={match[1]} code={codeString} copyLabel={t.copyCode} copiedLabel={t.copied} />
-                      );
-                    } else if (!inline) {
-                      return (
-                        <CodeBlock language="text" code={codeString} copyLabel={t.copyCode} copiedLabel={t.copied} />
+                        <CodeBlock
+                          language={language}
+                          code={rawCode}
+                          copyLabel={t.copyCode}
+                          copiedLabel={t.copied}
+                        />
                       );
                     }
-
+                    return <div className="my-3">{children}</div>;
+                  },
+                  code({ node, className, children, ...props }: any) {
                     return (
                       <code
                         className="px-1.5 py-0.5 rounded bg-neutral-200/70 dark:bg-neutral-800 text-xs font-mono text-neutral-900 dark:text-neutral-100"

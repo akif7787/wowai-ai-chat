@@ -275,17 +275,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       </div>
                     </div>
                   ) : (
-                    <button
-                      onClick={() => selectConversation(conv.id)}
-                      className="flex items-center gap-2.5 w-full px-3 py-2 text-left text-xs"
-                    >
-                      <MessageSquare className="w-3.5 h-3.5 text-neutral-400 dark:text-neutral-500 shrink-0" />
-                      <span className="flex-1 truncate font-normal">
-                        {conv.title}
-                      </span>
-                      <span className="text-[10px] text-neutral-400 dark:text-neutral-500 shrink-0">
-                        {formatRelativeTime(conv.updatedAt)}
-                      </span>
+                    <>
+                      <button
+                        onClick={() => selectConversation(conv.id)}
+                        className="flex items-center gap-2.5 flex-1 min-w-0 px-3 py-2 text-left text-xs focus:outline-none"
+                      >
+                        <MessageSquare className="w-3.5 h-3.5 text-neutral-400 dark:text-neutral-500 shrink-0" />
+                        <span className="flex-1 truncate font-normal">
+                          {conv.title}
+                        </span>
+                        <span className="text-[10px] text-neutral-400 dark:text-neutral-500 shrink-0">
+                          {formatRelativeTime(conv.updatedAt)}
+                        </span>
+                      </button>
 
                       {/* Context action button */}
                       <button
@@ -293,14 +295,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
                           e.stopPropagation();
                           setMenuOpenId(isMenuOpen ? null : conv.id);
                         }}
-                        className={`p-1 rounded-md text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-neutral-200/60 dark:hover:bg-neutral-700/60 opacity-0 group-hover:opacity-100 transition ${
+                        className={`p-1 mr-1.5 rounded-md text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-neutral-200/60 dark:hover:bg-neutral-700/60 opacity-0 group-hover:opacity-100 transition shrink-0 ${
                           isMenuOpen ? '!opacity-100' : ''
                         }`}
                         aria-label="Conversation options"
                       >
                         <MoreVertical className="w-3.5 h-3.5" />
                       </button>
-                    </button>
+                    </>
                   )}
 
                   {/* Context menu popup */}
