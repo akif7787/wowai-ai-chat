@@ -40,6 +40,7 @@ export const Header: React.FC<HeaderProps> = ({
     setIsMobileSidebarOpen,
     user,
     setUser,
+    logout,
     serverStatus,
   } = useApp();
 
@@ -105,7 +106,7 @@ export const Header: React.FC<HeaderProps> = ({
           <span
             id="badge-demo-mode"
             className="hidden sm:inline-flex items-center gap-1.5 px-2 py-0.5 text-xs font-medium rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20"
-            title="Configure GEMINI_API_KEY for live production inference"
+            title="Configure BAILU_API_KEY for live AI model inference"
           >
             <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
             Demo Mode
@@ -114,9 +115,14 @@ export const Header: React.FC<HeaderProps> = ({
           <span
             id="badge-live-mode"
             className="hidden sm:inline-flex items-center gap-1.5 px-2 py-0.5 text-xs font-medium rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20"
+            title={`Active AI Model: ${serverStatus.model || 'bailu-auto'}`}
           >
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-            Gemini 3.8
+            {serverStatus.model === 'bailu-auto'
+              ? 'BAILU Auto'
+              : serverStatus.model
+              ? (serverStatus.model.startsWith('bailu-') ? 'BAILU ' + serverStatus.model.slice(6).toUpperCase() : serverStatus.model)
+              : 'BAILU Auto'}
           </span>
         )}
       </div>
@@ -265,12 +271,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <button
                   id="menu-item-logout"
                   onClick={() => {
-                    setUser({
-                      name: 'Guest',
-                      email: 'guest@wowai.app',
-                      avatar: '',
-                      isAuthenticated: false,
-                    });
+                    logout();
                     setIsProfileMenuOpen(false);
                   }}
                   className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/20 transition text-left"

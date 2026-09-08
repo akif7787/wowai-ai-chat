@@ -13,6 +13,7 @@ export interface ChatMessage {
 
 export interface Conversation {
   id: string;
+  userId?: string;
   title: string;
   messages: ChatMessage[];
   createdAt: number;
@@ -20,6 +21,7 @@ export interface Conversation {
 }
 
 export interface UserProfile {
+  id?: string;
   name: string;
   email: string;
   avatar: string;

@@ -21,6 +21,26 @@
   status = 200
 
 [[redirects]]
+  from = "/api/auth/*"
+  to = "/.netlify/functions/auth"
+  status = 200
+
+[[redirects]]
+  from = "/api/auth"
+  to = "/.netlify/functions/auth"
+  status = 200
+
+[[redirects]]
+  from = "/api/conversations/*"
+  to = "/.netlify/functions/conversations"
+  status = 200
+
+[[redirects]]
+  from = "/api/conversations"
+  to = "/.netlify/functions/conversations"
+  status = 200
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200

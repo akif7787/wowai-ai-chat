@@ -23,12 +23,13 @@ function MainLayout() {
     isGenerating,
     activeStreamingMessage,
     errorMessage,
+    isAuthModalOpen,
+    setIsAuthModalOpen,
     settings,
     t,
   } = useApp();
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [aboutInitialTab, setAboutInitialTab] = useState<'about' | 'privacy' | 'terms'>('about');
 
@@ -56,7 +57,7 @@ function MainLayout() {
       {/* Universal Top Header */}
       <Header
         onOpenSettings={() => setIsSettingsOpen(true)}
-        onOpenAuth={() => setIsAuthOpen(true)}
+        onOpenAuth={() => setIsAuthModalOpen(true)}
         onOpenAbout={handleOpenAbout}
       />
 
@@ -72,7 +73,7 @@ function MainLayout() {
           {/* Collapsible Sidebar */}
           <Sidebar
             onOpenSettings={() => setIsSettingsOpen(true)}
-            onOpenAuth={() => setIsAuthOpen(true)}
+            onOpenAuth={() => setIsAuthModalOpen(true)}
             onOpenAbout={handleOpenAbout}
           />
 
@@ -177,8 +178,8 @@ function MainLayout() {
       />
 
       <AuthModal
-        isOpen={isAuthOpen}
-        onClose={() => setIsAuthOpen(false)}
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
       />
 
       <AboutModal

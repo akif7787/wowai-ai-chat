@@ -5,6 +5,9 @@
  * Self-contained and zero-dependency for maximum reliability.
  */
 
+import { verifyToken, extractTokenFromHeader } from '../server/auth.ts';
+import { store } from '../server/store.ts';
+
 const DEFAULT_MODEL = 'bailu-auto';
 const BAILU_CHAT_ENDPOINT = 'https://bailucode.com/openapi/v1/chat/completions';
 
@@ -102,6 +105,25 @@ export default async function handler(req: any, res: any) {
     : DEFAULT_MODEL;
 
   const payload = await parseRequestBody(req);
+
+  // Authenticate user and verify conversation ownership if conversationId is provided
+  const authHeader = req.headers['authorization'] || req.headers['Authorization'];
+  const token = extractTokenFromHeader(authHeader);
+  const userPayload = token ? verifyToken(token) : null;
+  if (payload?.conversationId && userPayload) {
+    const existingConv = store.getConversationById(payload.conversationId, userPayload.userId);
+    // If conversation belongs to someone else, reject
+    const allConvs = (store as any).memoryDb?.conversations;
+    if (allConvs && allConvs[payload.conversationId] && allConvs[payload.conversationId].userId !== userPayload.userId) {
+      const errPayload = { error: 'Access denied: Conversation belongs to another user.' };
+      if (typeof res.status === 'function') {
+        return res.status(403).json(errPayload);
+      }
+      res.statusCode = 403;
+      res.setHeader('Content-Type', 'application/json');
+      return res.end(JSON.stringify(errPayload));
+    }
+  }
 
   // Normalize messages
   let normalizedMessages: Array<{ role: 'user' | 'assistant' | 'system'; content: string }> = [];

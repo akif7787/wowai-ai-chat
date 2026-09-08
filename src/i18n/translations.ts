@@ -64,8 +64,8 @@ export const translations = {
     aboutWowaiContent: "Wowai is a simple, modern AI assistant designed to help people learn, create, analyze, and get things done. Built with focus on clarity, performance, and respectful design.",
     developedBy: "Developed by Ahanaf Akif",
     builtWithPassion: "Built with passion by Ahanf Akif",
-    demoModeNotice: "Demo Mode Active (Add GEMINI_API_KEY for live generative model)",
-    liveModeNotice: "Live Gemini Engine Active",
+    demoModeNotice: "Demo Mode Active (Add BAILU_API_KEY for live generative model)",
+    liveModeNotice: "Live BAILU Engine Active",
     signIn: "Sign In",
     signUp: "Sign Up",
     continueWithGoogle: "Continue with Google",
@@ -87,7 +87,7 @@ Wowai values your privacy. This application acts as a client-side and server-pro
 1. **Data Transmission**: Your prompt messages are sent securely to the configured server API to generate responses.
 2. **Local Storage**: By default, your chat history and settings are stored locally in your browser's localStorage.
 3. **Sensitive Information**: Avoid entering personally identifiable numbers, passwords, or confidential organizational secrets.
-4. **Third-Party Providers**: When connected to an external AI provider (such as Google Gemini), data processing follows that provider's privacy guidelines.`,
+4. **Third-Party Providers**: When connected to an external AI provider (such as BAILU AI), data processing follows that provider's privacy guidelines.`,
     termsContent: `### Terms of Service (Responsible Use Notice)
 By using Wowai, you agree to these practical guidelines:
 
@@ -160,8 +160,8 @@ By using Wowai, you agree to these practical guidelines:
     aboutWowaiContent: "Wowai হলো একটি সহজ, আধুনিক এবং দ্রুতগতির এআই সহকারী — যা শেখা, সৃজনশীল কাজ, কোডিং এবং বিশ্লেষণকে আরও সাবলীল করতে তৈরি করা হয়েছে।",
     developedBy: "Developed by Ahanaf Akif",
     builtWithPassion: "Built with passion by Ahanf Akif",
-    demoModeNotice: "ডেমো মোড সক্রিয় (লাইভ মডেলের জন্য GEMINI_API_KEY যোগ করুন)",
-    liveModeNotice: "লাইভ জেমিনি ইঞ্জিন সক্রিয়",
+    demoModeNotice: "ডেমো মোড সক্রিয় (লাইভ মডেলের জন্য BAILU_API_KEY যোগ করুন)",
+    liveModeNotice: "লাইভ BAILU ইঞ্জিন সক্রিয়",
     signIn: "সাইন ইন",
     signUp: "সাইন আপ",
     continueWithGoogle: "গুগল দিয়ে চালিয়ে যান",
@@ -183,7 +183,7 @@ Wowai আপনার গোপনীয়তাকে সম্মান ক�
 ১. **ডেটা ট্রান্সমিশন**: আপনার প্রশ্নের বার্তাগুলো নিরাপদভাবে সার্ভার API-এর মাধ্যমে প্রসেস করা হয়।
 ২. **লোকাল স্টোরেজ**: আপনার চ্যাট হিস্ট্রি এবং সেটিংস আপনার ব্রাউজারের লোকাল স্টোরেজে নিরাপদে সংরক্ষিত থাকে।
 ৩. **সংবেদনশীল তথ্য**: কোনো প্রকার ব্যক্তিগত পাসওয়ার্ড, ব্যাংক তথ্য বা অতি গোপনীয় নথি এখানে প্রবেশ করানো থেকে বিরত থাকুন।
-৪. **এআই প্রোভাইডার**: যখন কোনো বাহ্যিক এআই প্রোভাইডার (যেমন Google Gemini) যুক্ত থাকে, তখন তাদের নির্ধারিত প্রাইভেসি নীতিমালা প্রযোজ্য হবে।`,
+৪. **এআই প্রোভাইডার**: যখন কোনো বাহ্যিক এআই প্রোভাইডার (যেমন BAILU AI) যুক্ত থাকে, তখন তাদের নির্ধারিত প্রাইভেসি নীতিমালা প্রযোজ্য হবে।`,
     termsContent: `### ব্যবহারের শর্তাবলী (দায়িত্বশীল ব্যবহারের নিয়মাবলী)
 Wowai ব্যবহারের মাধ্যমে আপনি নিম্নোক্ত নীতিমালার সাথে একমত পোষণ করছেন:
 

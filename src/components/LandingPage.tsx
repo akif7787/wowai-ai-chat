@@ -48,7 +48,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-neutral-200 dark:border-neutral-800 bg-white/80 dark:bg-neutral-900/80 shadow-xs mb-8">
           <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
           <span className="text-xs font-medium text-neutral-600 dark:text-neutral-300">
-            {serverStatus.isDemo ? 'Wowai v1.0 • Smart AI Assistant' : 'Wowai v1.0 • Gemini 3.8 Powered'}
+            {serverStatus.isDemo
+              ? 'Wowai v1.0 • Smart AI Assistant'
+              : serverStatus.model === 'bailu-auto'
+              ? 'Wowai v1.0 • BAILU Auto Powered'
+              : `Wowai v1.0 • ${serverStatus.model || 'BAILU'} Powered`}
           </span>
           <span className="text-neutral-300 dark:text-neutral-700">|</span>
           <span className="text-xs text-neutral-500 dark:text-neutral-400">English & বাংলা</span>

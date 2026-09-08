@@ -1,4 +1,6 @@
 import type { Context } from '@netlify/functions';
+import { verifyToken, extractTokenFromHeader } from '../../server/auth.ts';
+import { store } from '../../server/store.ts';
 
 const DEFAULT_MODEL = 'bailu-auto';
 const BAILU_CHAT_ENDPOINT = 'https://bailucode.com/openapi/v1/chat/completions';
@@ -69,6 +71,20 @@ export default async (req: Request, _context: Context): Promise<Response> => {
     payload = await req.json();
   } catch {
     payload = {};
+  }
+
+  // Authenticate user and verify conversation ownership if conversationId is provided
+  const authHeader = req.headers.get('authorization') || req.headers.get('Authorization');
+  const token = extractTokenFromHeader(authHeader);
+  const userPayload = token ? verifyToken(token) : null;
+  if (payload?.conversationId && userPayload) {
+    const allConvs = (store as any).memoryDb?.conversations;
+    if (allConvs && allConvs[payload.conversationId] && allConvs[payload.conversationId].userId !== userPayload.userId) {
+      return new Response(JSON.stringify({ error: 'Access denied: Conversation belongs to another user.' }), {
+        status: 403,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
   }
 
   const activeModel = (payload?.model && typeof payload.model === 'string' && payload.model.trim())

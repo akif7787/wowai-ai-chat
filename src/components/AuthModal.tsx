@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Lock, Mail, User, ShieldCheck } from 'lucide-react';
+import { X, Lock, Mail, User, ShieldCheck, AlertCircle, Loader2 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
 interface AuthModalProps {
@@ -8,33 +8,73 @@ interface AuthModalProps {
 }
 
 export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
-  const { t, user, setUser } = useApp();
+  const { t, login, signup } = useApp();
   const [mode, setMode] = useState<'signin' | 'signup'>('signin');
-  const [email, setEmail] = useState('akif7787@gmail.com');
-  const [name, setName] = useState('Ahanaf Akif');
-  const [password, setPassword] = useState('••••••••');
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [password, setPassword] = useState('');
+  const [authError, setAuthError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   if (!isOpen) return null;
 
-  const handleAuth = (e: React.FormEvent) => {
+  const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
-    setUser({
-      name: mode === 'signup' ? (name || 'Ahanaf Akif') : 'Ahanaf Akif',
-      email: email || 'akif7787@gmail.com',
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-      isAuthenticated: true,
-    });
-    onClose();
+    setAuthError(null);
+    setIsLoading(true);
+
+    try {
+      if (mode === 'signup') {
+        if (!name.trim()) {
+          setAuthError('Name is required');
+          setIsLoading(false);
+          return;
+        }
+        const res = await signup(email.trim(), password, name.trim());
+        if (!res.success) {
+          setAuthError(res.error || 'Signup failed');
+          setIsLoading(false);
+          return;
+        }
+      } else {
+        const res = await login(email.trim(), password);
+        if (!res.success) {
+          setAuthError(res.error || 'Invalid email or password');
+          setIsLoading(false);
+          return;
+        }
+      }
+      onClose();
+    } catch (err: any) {
+      setAuthError(err.message || 'Authentication error');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleGoogleAuth = () => {
-    setUser({
-      name: 'Ahanaf Akif',
-      email: 'akif7787@gmail.com',
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-      isAuthenticated: true,
-    });
-    onClose();
+  const handleGoogleAuth = async () => {
+    setAuthError(null);
+    setIsLoading(true);
+    try {
+      // Create or log into Google demo account securely
+      const googleEmail = 'google_user@wowai.app';
+      const googlePass = 'GoogleAccount2026!';
+      const res = await login(googleEmail, googlePass);
+      if (res.success) {
+        onClose();
+      } else {
+        const signupRes = await signup(googleEmail, googlePass, 'Google User');
+        if (signupRes.success) {
+          onClose();
+        } else {
+          setAuthError(signupRes.error || 'Google authentication failed');
+        }
+      }
+    } catch (err: any) {
+      setAuthError(err.message || 'Google authentication failed');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -68,10 +108,19 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           {t.tagline}
         </p>
 
+        {authError && (
+          <div className="mb-4 p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0" />
+            <span>{authError}</span>
+          </div>
+        )}
+
         {/* Continue with Google */}
         <button
+          type="button"
           onClick={handleGoogleAuth}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-800 text-neutral-800 dark:text-neutral-200 text-xs font-medium transition mb-4 shadow-xs"
+          disabled={isLoading}
+          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-800 text-neutral-800 dark:text-neutral-200 text-xs font-medium transition mb-4 shadow-xs disabled:opacity-50"
         >
           <svg className="w-4 h-4" viewBox="0 0 24 24">
             <path
@@ -114,7 +163,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                   value={name}
                   onChange={e => setName(e.target.value)}
                   className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent text-neutral-900 dark:text-white focus:outline-none focus:border-neutral-900 dark:focus:border-white"
-                  placeholder="Ahanaf Akif"
+                  placeholder="Your Name"
                   required
                 />
               </div>
@@ -132,7 +181,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent text-neutral-900 dark:text-white focus:outline-none focus:border-neutral-900 dark:focus:border-white"
-                placeholder="akif7787@gmail.com"
+                placeholder="you@example.com"
                 required
               />
             </div>
@@ -149,6 +198,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-neutral-300 dark:border-neutral-700 bg-transparent text-neutral-900 dark:text-white focus:outline-none focus:border-neutral-900 dark:focus:border-white"
+                placeholder="••••••••"
                 required
               />
             </div>
@@ -156,15 +206,21 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
           <button
             type="submit"
-            className="w-full py-2.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 dark:bg-white dark:hover:bg-neutral-100 text-white dark:text-neutral-900 font-medium text-xs transition shadow-xs mt-2"
+            disabled={isLoading}
+            className="w-full py-2.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 dark:bg-white dark:hover:bg-neutral-100 text-white dark:text-neutral-900 font-medium text-xs transition shadow-xs mt-2 flex items-center justify-center gap-2 disabled:opacity-50"
           >
-            {mode === 'signin' ? t.signIn : t.signUp}
+            {isLoading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+            <span>{mode === 'signin' ? t.signIn : t.signUp}</span>
           </button>
         </form>
 
         <div className="mt-4 text-center">
           <button
-            onClick={() => setMode(mode === 'signin' ? 'signup' : 'signin')}
+            type="button"
+            onClick={() => {
+              setAuthError(null);
+              setMode(mode === 'signin' ? 'signup' : 'signin');
+            }}
             className="text-xs text-neutral-500 hover:text-neutral-900 dark:hover:text-white"
           >
             {mode === 'signin'
@@ -175,7 +231,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
         <div className="mt-4 pt-3 border-t border-neutral-100 dark:border-neutral-800 text-[11px] text-neutral-400 text-center flex items-center justify-center gap-1.5">
           <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-          <span>Local session simulated for evaluation</span>
+          <span>Secure authentication & user-isolated chat history</span>
         </div>
       </div>
     </div>

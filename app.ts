@@ -2,6 +2,8 @@ import express from 'express';
 import statusHandler from './api/status.ts';
 import modelsHandler from './api/models.ts';
 import chatHandler from './api/chat.ts';
+import authHandler from './api/auth.ts';
+import conversationsHandler from './api/conversations.ts';
 
 /**
  * Creates and configures the Express application for local dev server and container runs,
@@ -15,6 +17,8 @@ export function createExpressApp() {
   app.all(['/api/status', '/status'], (req, res) => statusHandler(req, res));
   app.all(['/api/models', '/models'], (req, res) => modelsHandler(req, res));
   app.all(['/api/chat', '/chat'], (req, res) => chatHandler(req, res));
+  app.all(['/api/auth*', '/auth*'], (req, res) => authHandler(req, res));
+  app.all(['/api/conversations*', '/conversations*'], (req, res) => conversationsHandler(req, res));
 
   return app;
 }

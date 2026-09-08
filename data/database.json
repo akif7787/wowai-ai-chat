@@ -1,0 +1,48 @@
+{
+  "users": {
+    "user_default_akif": {
+      "id": "user_default_akif",
+      "email": "akif7787@gmail.com",
+      "passwordHash": "248ac8c5495568e0aa5130f313329fb29e907e16e61e2d42753ea9e3edf708f303881aacc57d1e9dc97d6d43e3e32f480fdad7269589c81410886fcea4b58055",
+      "salt": "e23f035a05ed04cf51fd3a04712203e9",
+      "name": "Ahanaf Akif",
+      "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+      "createdAt": 1788903720850
+    },
+    "user_44f65c29bcc04275": {
+      "id": "user_44f65c29bcc04275",
+      "email": "alice@example.com",
+      "passwordHash": "6eb6746d8c3034b4649b5b36327820d3248f0b1f08a03575393cc847c80f0f117e01f6b785e5ee1641b93031d5e081b5dd9cd35fdd60cd3cd4a9fe53b6d15701",
+      "salt": "0aa9727a6ce7da1f0e73c02103af27c9",
+      "name": "Alice",
+      "avatar": "https://api.dicebear.com/7.x/initials/svg?seed=Alice",
+      "createdAt": 1788903724510
+    },
+    "user_e877acaf1c554cb4": {
+      "id": "user_e877acaf1c554cb4",
+      "email": "bob@example.com",
+      "passwordHash": "a87621ff6bc143ec7bbcd4d4c6691ad589bbb405301753324059a9ad990b1cda0ffd9968864ce4c0d69bcc7ec63a3f7f3403de61a96351cedcfd3cd6d15f0a2a",
+      "salt": "47c1b0277214717756ba735aa58d4596",
+      "name": "Bob",
+      "avatar": "https://api.dicebear.com/7.x/initials/svg?seed=Bob",
+      "createdAt": 1788903724620
+    }
+  },
+  "conversations": {
+    "conv-alice-1": {
+      "id": "conv-alice-1",
+      "userId": "user_44f65c29bcc04275",
+      "title": "Alice Private Chat",
+      "messages": [
+        {
+          "id": "m1",
+          "role": "user",
+          "content": "Secret message",
+          "timestamp": 1788903724526
+        }
+      ],
+      "createdAt": 1788903724534,
+      "updatedAt": 1788903724534
+    }
+  }
+}
