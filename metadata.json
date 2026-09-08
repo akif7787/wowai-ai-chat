@@ -1,0 +1,6 @@
+{
+  "name": "Wowai",
+  "description": "A minimal, modern, and production-ready AI chat web application that feels simple. Features bilingual English and বাংলা support, streaming responses, full conversation management, and custom themes.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
