@@ -1,4 +1,5 @@
-import { getAIProvider, ChatMessageParam, StreamCallbacks } from './provider.ts';
+import { getAIProvider } from './provider.ts';
+import type { ChatMessageParam, StreamCallbacks } from './provider.ts';
 
 export interface ChatRequestPayload {
   message?: string;
