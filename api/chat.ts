@@ -6,7 +6,25 @@
  */
 
 const DEFAULT_MODEL = 'bailu-auto';
-const BAILU_CHAT_ENDPOINT = 'https://api.bailucode.com/v1/chat/completions';
+const BAILU_CHAT_ENDPOINT = 'https://bailucode.com/openapi/v1/chat/completions';
+
+function cleanErrorMessage(status: number, rawText: string): string {
+  if (!rawText) return `BAILU API error (${status})`;
+  if (rawText.includes('<title>Just a moment') || rawText.includes('cf-browser-verification')) {
+    return 'Cloudflare challenge encountered. Please retry in a few moments.';
+  }
+  try {
+    const json = JSON.parse(rawText);
+    if (json.error?.message) return json.error.message;
+    if (json.error_description) return json.error_description;
+    if (typeof json.error === 'string') return json.error;
+  } catch {}
+  if (rawText.includes('<') && rawText.includes('>')) {
+    const textOnly = rawText.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+    return textOnly.slice(0, 160) || `BAILU API error (${status})`;
+  }
+  return rawText.slice(0, 200);
+}
 
 function buildSystemPrompt(language?: 'en' | 'bn'): string {
   const langPrompt = language === 'bn'
@@ -175,7 +193,7 @@ export default async function handler(req: any, res: any) {
     return res.end(JSON.stringify(demoPayload));
   }
 
-  // REAL BAILU AI COMPLETION
+  // REAL BAILU AI COMPLETION VIA OPENAPI ENDPOINT
   async function callBailu(modelName: string, stream: boolean) {
     return fetch(BAILU_CHAT_ENDPOINT, {
       method: 'POST',
@@ -205,15 +223,16 @@ export default async function handler(req: any, res: any) {
     try {
       let upstreamRes = await callBailu(activeModel, true);
 
-      // If activeModel failed due to 403 or 429, retry once with bailu-auto
-      if (!upstreamRes.ok && activeModel !== DEFAULT_MODEL && (upstreamRes.status === 403 || upstreamRes.status === 429)) {
-        activeModel = DEFAULT_MODEL;
-        upstreamRes = await callBailu(DEFAULT_MODEL, true);
+      // If activeModel returned 429 (busy) or 403, retry with bailu-2.8-lite or bailu-auto
+      if (!upstreamRes.ok && (upstreamRes.status === 429 || upstreamRes.status === 403)) {
+        const fallbackModel = activeModel === 'bailu-2.8-lite' ? DEFAULT_MODEL : 'bailu-2.8-lite';
+        upstreamRes = await callBailu(fallbackModel, true);
       }
 
       if (!upstreamRes.ok) {
         const errText = await upstreamRes.text().catch(() => '');
-        res.write(`data: ${JSON.stringify({ error: `BAILU API error (${upstreamRes.status}): ${errText || 'Upstream error'}` })}\n\n`);
+        const message = cleanErrorMessage(upstreamRes.status, errText);
+        res.write(`data: ${JSON.stringify({ error: message })}\n\n`);
         return res.end();
       }
 
@@ -269,14 +288,15 @@ export default async function handler(req: any, res: any) {
   try {
     let upstreamRes = await callBailu(activeModel, false);
 
-    if (!upstreamRes.ok && activeModel !== DEFAULT_MODEL && (upstreamRes.status === 403 || upstreamRes.status === 429)) {
-      activeModel = DEFAULT_MODEL;
-      upstreamRes = await callBailu(DEFAULT_MODEL, false);
+    if (!upstreamRes.ok && (upstreamRes.status === 429 || upstreamRes.status === 403)) {
+      const fallbackModel = activeModel === 'bailu-2.8-lite' ? DEFAULT_MODEL : 'bailu-2.8-lite';
+      upstreamRes = await callBailu(fallbackModel, false);
     }
 
     if (!upstreamRes.ok) {
       const errText = await upstreamRes.text().catch(() => '');
-      const errPayload = { error: `BAILU API error (${upstreamRes.status}): ${errText}` };
+      const message = cleanErrorMessage(upstreamRes.status, errText);
+      const errPayload = { error: message };
       if (typeof res.status === 'function') {
         return res.status(upstreamRes.status).json(errPayload);
       }
