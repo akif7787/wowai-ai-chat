@@ -6,7 +6,7 @@
  */
 
 const DEFAULT_MODEL = 'bailu-auto';
-const BAILU_CHAT_ENDPOINT = 'https://bailucode.com/openapi/v1/chat/completions';
+const BAILU_CHAT_ENDPOINT = 'https://api.bailucode.com/v1/chat/completions';
 
 function buildSystemPrompt(language?: 'en' | 'bn'): string {
   const langPrompt = language === 'bn'
@@ -183,6 +183,7 @@ export default async function handler(req: any, res: any) {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${rawKey!.trim()}`,
         Accept: stream ? 'text/event-stream' : 'application/json',
+        'User-Agent': 'Wowai/1.0',
       },
       body: JSON.stringify({
         model: modelName,

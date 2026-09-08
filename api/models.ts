@@ -47,8 +47,11 @@ export default async function handler(req: any, res: any) {
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 5000);
-      const apiRes = await fetch('https://bailucode.com/openapi/v1/models', {
-        headers: { Authorization: `Bearer ${rawKey!.trim()}` },
+      const apiRes = await fetch('https://api.bailucode.com/v1/models', {
+        headers: {
+          Authorization: `Bearer ${rawKey!.trim()}`,
+          'User-Agent': 'Wowai/1.0',
+        },
         signal: controller.signal,
       });
       clearTimeout(timeoutId);

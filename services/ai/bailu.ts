@@ -1,8 +1,8 @@
 import type { AIProvider, ChatMessageParam, StreamCallbacks } from './provider.ts';
 
-export const BAILU_BASE_URL = 'https://bailucode.com/openapi';
-export const BAILU_CHAT_ENDPOINT = `${BAILU_BASE_URL}/v1/chat/completions`;
-export const BAILU_MODELS_ENDPOINT = `${BAILU_BASE_URL}/v1/models`;
+export const BAILU_BASE_URL = 'https://api.bailucode.com/v1';
+export const BAILU_CHAT_ENDPOINT = `${BAILU_BASE_URL}/chat/completions`;
+export const BAILU_MODELS_ENDPOINT = `${BAILU_BASE_URL}/models`;
 
 export const DEFAULT_BAILU_MODEL = 'bailu-auto';
 
@@ -39,6 +39,7 @@ export async function discoverBailuModels(apiKey: string): Promise<string[]> {
       headers: {
         'Authorization': `Bearer ${apiKey}`,
         'Accept': 'application/json',
+        'User-Agent': 'Wowai/1.0',
       },
     });
 
@@ -237,6 +238,7 @@ export class BailuAIProvider implements AIProvider {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${this.apiKey}`,
         'Accept': 'text/event-stream',
+        'User-Agent': 'Wowai/1.0',
       },
       body: JSON.stringify(requestBody),
       signal,
@@ -325,6 +327,7 @@ export class BailuAIProvider implements AIProvider {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${this.apiKey}`,
         'Accept': 'application/json',
+        'User-Agent': 'Wowai/1.0',
       },
       body: JSON.stringify(requestBody),
       signal,
